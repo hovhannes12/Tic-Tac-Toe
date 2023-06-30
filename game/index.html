@@ -11,14 +11,7 @@
 <body>
     <p id="demo"></p>
 
-<script>
-setInterval(myTimer, 1000);
 
-function myTimer() {
-  const d = new Date();
-  document.getElementById("demo").innerHTML = d.toLocaleTimeString();
-}
-</script>
     <div id="gameContainer">
         <h1>Tic Tac Toe</h1>
         <div id="cellContainer">
@@ -35,10 +28,12 @@ function myTimer() {
         <h2 id="statusText"></h2>
         <button id="restartBtn">Restart</button>
     </div>
-    <script src="index.js"></script>
-    <section >
     <div class="time" id="time"></div>
     </section>
-    <div id="timer">10</div>
+    <div id="timer">5</div>
+    <section>
+    <script src="index.js"></script>
+    
+    
 </body>
 </html>

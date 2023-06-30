@@ -14,6 +14,7 @@ const winConditions = [
 let options = ["", "", "", "", "", "", "", "", "",];
 let currentPlayer = "X";
 let running = false;
+seconds = 0;
 
 initializeGame();
 
@@ -28,7 +29,14 @@ function initializeGame() {
 
 }
 function cellClicked() {
+
   const cellIndex = this.getAttribute("cellIndex");
+  if(second >= 5){
+    currentPlayer = (currentPlayer == "X") ? "O" : "X";
+    running = false;
+  }
+
+  
 
   if (options[cellIndex] != "" || !running) {
     return;
@@ -36,6 +44,11 @@ function cellClicked() {
 
   updateCell(this, cellIndex);
   checkWinner();
+  seconds = 0
+  let countdown = setInterval(function () {
+    seconds++;
+  }, 1000)
+ 
 
 }
 function updateCell(cell, index) {
@@ -90,13 +103,3 @@ function restartGame() {
 
 }
 
-function timer(){
-  setTimeout(finish, seconds * 1000);
-  getElement("time").innerHTML = seconds;
-  let countdown = setInterval(function () {
-    seconds--;
-    getElement("time").textContent = seconds;
-    if (seconds <= 0) clearInterval(countdown);
-    if (seconds === 5) getElement("time").style.color = "#ff0000";
-  }, 1000)
-}
