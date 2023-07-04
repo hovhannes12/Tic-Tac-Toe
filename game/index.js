@@ -14,45 +14,59 @@ const winConditions = [
 let options = ["", "", "", "", "", "", "", "", "",];
 let currentPlayer = "X";
 let running = false;
-seconds = 0;
+seconds = 5;
 
+let countdown;
 initializeGame();
 
 function initializeGame() {
   cells.forEach(cell => cell.addEventListener("click", cellClicked))
+  
   restartBtn.addEventListener(
     "click", function () {
       location.reload();
-  });
+    });
   statusText.textContent = `${currentPlayer}'s turn`;
   running = true;
 
 }
+function getElement(id) {
+  return document.getElementById(id);
+}
 function cellClicked() {
-
   const cellIndex = this.getAttribute("cellIndex");
-  if(second >= 5){
-    currentPlayer = (currentPlayer == "X") ? "O" : "X";
-    running = false;
-  }
-
   
-
+  if (seconds <= 0) {
+    currentPlayer = (currentPlayer == "X") ? "O" : "X";
+    statusText.textContent = `${currentPlayer} wins!`;
+    running = false;
+    /// xaxay stop anel u asel vor haxtel e currentPlayer
+  }
+  
   if (options[cellIndex] != "" || !running) {
     return;
   }
 
   updateCell(this, cellIndex);
   checkWinner();
-  seconds = 0
-  let countdown = setInterval(function () {
-    seconds++;
-  }, 1000)
- 
+  seconds = 5;
+  getElement("time").style.color = "black";
+  if(countdown){
+    clearInterval(countdown)
+  }
+
+  getElement("time").textContent = seconds;
+  countdown = setInterval(function () {
+    seconds--;
+    getElement("time").textContent = seconds;
+    if (seconds <= 0) clearInterval(countdown);
+    if (seconds <= 3) getElement("time").style.color = "#ff0000";
+  }, 1000);
+
 
 }
 function updateCell(cell, index) {
-  
+
   options[index] = currentPlayer;
   cell.textContent = currentPlayer;
 
@@ -78,12 +92,14 @@ function checkWinner() {
     }
     if (cellA == cellB && cellB == cellC) {
       roundWon = true;
+      
       break;
     }
   }
   if (roundWon) {
     statusText.textContent = `${currentPlayer} wins!`;
     running = false;
+    
   }
   else if (!options.includes("")) {
     statusText.textContent = `Draw!`;
@@ -102,4 +118,14 @@ function restartGame() {
 
 
 }
-
+function check() {
+  let input;
+  try {
+    input = document.querySelector('input[name = "option"]:checked').value;
+  } catch {
+    return;
+  }
+  statusText.textContent++;
+  getElement("score").innerHTML = statusText.textContent;
+   clearInterval(checkInterval);
+}
