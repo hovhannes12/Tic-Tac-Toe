@@ -1,6 +1,7 @@
 let cells = document.querySelectorAll(".cell");
 let statusText = document.getElementById("statusText");
 let restartBtn = document.getElementById("restartBtn");
+let counterForX = 0;
 const winConditions = [
   [0, 1, 2],
   [3, 4, 5],
@@ -21,7 +22,7 @@ initializeGame();
 
 function initializeGame() {
   cells.forEach(cell => cell.addEventListener("click", cellClicked))
-  
+
   restartBtn.addEventListener(
     "click", function () {
       location.reload();
@@ -35,35 +36,38 @@ function getElement(id) {
 }
 function cellClicked() {
   const cellIndex = this.getAttribute("cellIndex");
-  
+
   if (seconds <= 0) {
     currentPlayer = (currentPlayer == "X") ? "O" : "X";
     statusText.textContent = `${currentPlayer} wins!`;
     running = false;
+
     /// xaxay stop anel u asel vor haxtel e currentPlayer
   }
-  
+
   if (options[cellIndex] != "" || !running) {
     return;
   }
 
   updateCell(this, cellIndex);
-  checkWinner();
-  seconds = 5;
-  getElement("time").style.color = "black";
-  if(countdown){
+  if(!checkWinner()){
+    seconds = 5;
+    getElement("time").style.color = "black";
+    if (countdown) {
+      clearInterval(countdown)
+    }
+  
+    getElement("time").textContent = seconds;
+    countdown = setInterval(function () {
+      seconds--;
+      getElement("time").textContent = seconds;
+      if (seconds <= 0) clearInterval(countdown);
+      if (seconds <= 3) getElement("time").style.color = "#ff0000";
+    }, 1000);
+  }else{
     clearInterval(countdown)
   }
-
-  getElement("time").textContent = seconds;
-  countdown = setInterval(function () {
-    seconds--;
-    getElement("time").textContent = seconds;
-    if (seconds <= 0) clearInterval(countdown);
-    if (seconds <= 3) getElement("time").style.color = "#ff0000";
-  }, 1000);
-
-
+  
 }
 function updateCell(cell, index) {
 
@@ -90,16 +94,22 @@ function checkWinner() {
     if (cellA == "" || cellB == "" || cellC == "") {
       continue;
     }
-    if (cellA == cellB && cellB == cellC) {
+    if (cellA == cellB && cellB == cellC && cellA != "") {
       roundWon = true;
-      
+
       break;
     }
   }
   if (roundWon) {
+    if (currentPlayer = "X") {
+      counterForX++;
+      getElement("scorex").innerHTML = counterForX;
+    }
+
     statusText.textContent = `${currentPlayer} wins!`;
     running = false;
-    
+    return true;
+
   }
   else if (!options.includes("")) {
     statusText.textContent = `Draw!`;
@@ -113,19 +123,21 @@ function restartGame() {
   currentPlayer = "X";
   option = ["", "", "", "", "", "", "", "", "",];
   statusText.textContent = `${currentPlayer}'s turn`;
-  cells.forrEach(cell => cell.textContent = "");
-  running = true;
 
-
-}
-function check() {
-  let input;
-  try {
-    input = document.querySelector('input[name = "option"]:checked').value;
-  } catch {
-    return;
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].textContent = ""
   }
-  statusText.textContent++;
-  getElement("score").innerHTML = statusText.textContent;
-   clearInterval(checkInterval);
+  countdown = undefined;
+  running = true;
 }
+// function check() {
+//   let input;
+//   try {
+//     input = document.querySelector('input[name = "option"]:checked').value;
+//   } catch {
+//     return;
+//   }
+//   statusText.textContent++;
+//   getElement("score").innerHTML = statusText.textContent;
+//    clearInterval(checkInterval);
+// }
