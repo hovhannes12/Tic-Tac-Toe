@@ -2,6 +2,7 @@ let cells = document.querySelectorAll(".cell");
 let statusText = document.getElementById("statusText");
 let restartBtn = document.getElementById("restartBtn");
 let counterForX = 0;
+let counterForO = 0;
 const winConditions = [
   [0, 1, 2],
   [3, 4, 5],
@@ -14,8 +15,9 @@ const winConditions = [
 ];
 let options = ["", "", "", "", "", "", "", "", "",];
 let currentPlayer = "X";
+
 let running = false;
-seconds = 5;
+seconds = 10;
 
 let countdown;
 initializeGame();
@@ -41,6 +43,7 @@ function cellClicked() {
     currentPlayer = (currentPlayer == "X") ? "O" : "X";
     statusText.textContent = `${currentPlayer} wins!`;
     running = false;
+    
 
     /// xaxay stop anel u asel vor haxtel e currentPlayer
   }
@@ -51,8 +54,8 @@ function cellClicked() {
 
   updateCell(this, cellIndex);
   if(!checkWinner()){
-    seconds = 5;
-    getElement("time").style.color = "black";
+    seconds = 10;
+    getElement("time").style.color = "#0d8200";
     if (countdown) {
       clearInterval(countdown)
     }
@@ -62,9 +65,14 @@ function cellClicked() {
       seconds--;
       getElement("time").textContent = seconds;
       if (seconds <= 0) clearInterval(countdown);
+
+      if (seconds <= 6) getElement("time").style.color = "#fc7b03";
       if (seconds <= 3) getElement("time").style.color = "#ff0000";
     }, 1000);
   }else{
+    restartGame()
+    initializeGame()
+    seconds = 10
     clearInterval(countdown)
   }
   
@@ -101,10 +109,15 @@ function checkWinner() {
     }
   }
   if (roundWon) {
-    if (currentPlayer = "X") {
+    if (currentPlayer == "X") {
       counterForX++;
       getElement("scorex").innerHTML = counterForX;
+    }else{
+      counterForO++;
+      getElement("scoreo").innerHTML = counterForO;
     }
+
+    
 
     statusText.textContent = `${currentPlayer} wins!`;
     running = false;
@@ -114,6 +127,7 @@ function checkWinner() {
   else if (!options.includes("")) {
     statusText.textContent = `Draw!`;
     running = false;
+    return true;
   }
   else {
     changePlayer();
@@ -121,7 +135,7 @@ function checkWinner() {
 }
 function restartGame() {
   currentPlayer = "X";
-  option = ["", "", "", "", "", "", "", "", "",];
+  options = ["", "", "", "", "", "", "", "", "",];
   statusText.textContent = `${currentPlayer}'s turn`;
 
   for (var i = 0; i < cells.length; i++) {
@@ -130,14 +144,4 @@ function restartGame() {
   countdown = undefined;
   running = true;
 }
-// function check() {
-//   let input;
-//   try {
-//     input = document.querySelector('input[name = "option"]:checked').value;
-//   } catch {
-//     return;
-//   }
-//   statusText.textContent++;
-//   getElement("score").innerHTML = statusText.textContent;
-//    clearInterval(checkInterval);
-// }
+
