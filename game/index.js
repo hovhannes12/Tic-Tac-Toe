@@ -43,7 +43,7 @@ function cellClicked() {
     currentPlayer = (currentPlayer == "X") ? "O" : "X";
     statusText.textContent = `${currentPlayer} wins!`;
     running = false;
-    
+
 
     /// xaxay stop anel u asel vor haxtel e currentPlayer
   }
@@ -53,29 +53,45 @@ function cellClicked() {
   }
 
   updateCell(this, cellIndex);
-  if(!checkWinner()){
+  if (!checkWinner()) {
     seconds = 10;
     getElement("time").style.color = "#0d8200";
     if (countdown) {
       clearInterval(countdown)
     }
-  
+
     getElement("time").textContent = seconds;
     countdown = setInterval(function () {
       seconds--;
       getElement("time").textContent = seconds;
-      if (seconds <= 0) clearInterval(countdown);
+      if (seconds <= 0) {
+        clearInterval(countdown);
+        currentPlayer = (currentPlayer == "X") ? "O" : "X";
+        statusText.textContent = `${currentPlayer} wins!`;
+        running = false;
+        if (currentPlayer == "X") {
+          counterForX++;
+          getElement("scorex").innerHTML = counterForX;
+        } else {
+          counterForO++;
+          getElement("scoreo").innerHTML = counterForO;
+        }
+        restartGame()
+        initializeGame()
+        seconds = 10;
+        clearInterval(countdown)
+      }
 
       if (seconds <= 6) getElement("time").style.color = "#fc7b03";
       if (seconds <= 3) getElement("time").style.color = "#ff0000";
-    }, 1000);
-  }else{
+    }, 2000);
+  } else {
     restartGame()
     initializeGame()
-    seconds = 10
+    seconds = 10;
     clearInterval(countdown)
   }
-  
+
 }
 function updateCell(cell, index) {
 
@@ -87,6 +103,7 @@ function updateCell(cell, index) {
 function changePlayer() {
   currentPlayer = (currentPlayer == "X") ? "O" : "X";
   statusText.textContent = `${currentPlayer}'s turn`;
+
 
 
 }
@@ -112,16 +129,17 @@ function checkWinner() {
     if (currentPlayer == "X") {
       counterForX++;
       getElement("scorex").innerHTML = counterForX;
-    }else{
+    } else {
       counterForO++;
       getElement("scoreo").innerHTML = counterForO;
     }
 
-    
+
 
     statusText.textContent = `${currentPlayer} wins!`;
     running = false;
     return true;
+
 
   }
   else if (!options.includes("")) {
@@ -137,6 +155,7 @@ function restartGame() {
   currentPlayer = "X";
   options = ["", "", "", "", "", "", "", "", "",];
   statusText.textContent = `${currentPlayer}'s turn`;
+
 
   for (var i = 0; i < cells.length; i++) {
     cells[i].textContent = ""
